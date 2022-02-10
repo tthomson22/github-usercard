@@ -1,3 +1,4 @@
+import axios from 'axios';
 /*
   STEP 1: using axios, send a GET request to the following URL
     (replacing the placeholder with your Github name):
@@ -28,8 +29,6 @@
     user, and adding that card to the DOM.
 */
 
-const followersArray = [];
-
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
@@ -58,3 +57,63 @@ const followersArray = [];
     luishrd
     bigknell
 */
+
+const followersArray = ['tthomson22', 'tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell', 'CRHarding'];
+const getGithub = (username) => {
+  
+  axios.get(`https://api.github.com/users/${username}`)
+  .then(resp => {
+    document.querySelector('.cards').appendChild(githubCard(resp.data))
+  })
+  .catch(err => {
+    console.error(err)
+  })
+  .finally(() => console.log('DONE'))
+}
+
+for(let i = 0; i < followersArray.length; i++){
+  getGithub(followersArray[i])
+}
+
+function githubCard(githubInfo){
+  const card = document.createElement('div')
+  const image = document.createElement('img')
+  const cardInfo = document.createElement('div')
+  const name = document.createElement('h3')
+  const userName = document.createElement('p')
+  const location = document.createElement('p')
+  const profile = document.createElement('p')
+  const linkGit = document.createElement('a')
+  const followers = document.createElement('p')
+  const following = document.createElement('p')
+  const bio = document.createElement('p')
+
+  image.src = githubInfo.avatar_url
+  name.textContent = githubInfo.name
+  userName.textContent = githubInfo.login
+  location.textContent = `Location: ${githubInfo.location}`
+  profile.textContent = `Profile: `
+  linkGit.textContent = `${githubInfo.html_url}`
+  linkGit.href = githubInfo.html_url
+  followers.textContent = `Followers: ${githubInfo.followers}`
+  following.textContent = `Following: ${githubInfo.following}`
+  bio.textContent = `Bio: ${githubInfo.bio}`
+
+  card.appendChild(image)
+  card.appendChild(cardInfo)
+  cardInfo.appendChild(name)
+  cardInfo.appendChild(userName)
+  cardInfo.appendChild(location)
+  cardInfo.appendChild(profile)
+  profile.appendChild(linkGit)
+  cardInfo.appendChild(followers)
+  cardInfo.appendChild(following)
+  cardInfo.appendChild(bio)
+
+  card.classList.add('card')
+  cardInfo.classList.add('card-info')
+  name.classList.add('name')
+  userName.classList.add('username')
+
+  return card;
+}
